@@ -39,9 +39,9 @@ services:
       JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_change_in_production}
       JWT_EXPIRES_IN: 24h
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
-      ADMIN_NAME: ${ADMIN_NAME:-Admin}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrador General}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@tienda.com}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change_this_password}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-12345}
     ports:
       - "3000:3000"
 
