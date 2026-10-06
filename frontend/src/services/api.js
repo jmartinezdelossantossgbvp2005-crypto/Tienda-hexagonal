@@ -2,11 +2,8 @@ const getBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
-  if (typeof window !== 'undefined' && window.location && window.location.hostname) {
-    // Detecta automaticamente la IP o dominio de la instancia EC2 o localhost
-    return `${window.location.protocol}//${window.location.hostname}:3000/api`;
-  }
-  return 'http://localhost:3000/api';
+  // En Docker o produccion con Nginx, las peticiones van a /api relativas al mismo host
+  return '/api';
 };
 
 const BASE_URL = getBaseUrl();
@@ -29,7 +26,7 @@ async function request(endpoint, options = {}) {
       headers
     });
   } catch (networkError) {
-    throw new Error(`No se pudo conectar con el servidor backend en ${BASE_URL}. Asegurese de que el servicio este en ejecucion y el puerto 3000 este abierto.`);
+    throw new Error(`No se pudo conectar con el servidor backend en ${BASE_URL}. Asegurese de que el servicio este en ejecucion.`);
   }
 
   let data;
