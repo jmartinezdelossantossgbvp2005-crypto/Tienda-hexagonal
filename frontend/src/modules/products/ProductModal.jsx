@@ -60,7 +60,7 @@ export const ProductModal = ({ isOpen, onClose, product, onSaved }) => {
           <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>
             {product?.id ? 'Editar Producto' : 'Nuevo Producto'}
           </h2>
-          <button className="btn btn-outline btn-sm" onClick={onClose}>✕</button>
+          <button className="btn btn-outline btn-sm" onClick={onClose}>X</button>
         </div>
 
         <form onSubmit={handleSubmit}>

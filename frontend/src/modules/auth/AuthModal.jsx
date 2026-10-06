@@ -42,7 +42,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
           <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>
             {isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta'}
           </h2>
-          <button className="btn btn-outline btn-sm" onClick={onClose}>✕</button>
+          <button className="btn btn-outline btn-sm" onClick={onClose}>Cerrar</button>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -60,7 +60,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
                   className="form-input"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Juan Pérez"
+                  placeholder="Nombre y apellido"
                 />
               </div>
             )}
@@ -73,7 +73,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
                 className="form-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="usuario@ejemplo.com"
+                placeholder="correo@ejemplo.com"
               />
             </div>
 
@@ -87,7 +87,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
                   style={{ paddingRight: '4.5rem' }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="ej. 12345"
+                  placeholder="Ingrese su contraseña"
                 />
                 <button
                   type="button"
@@ -110,7 +110,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
 
             {!isLoginMode && (
               <div className="form-group">
-                <label className="form-label">Rol</label>
+                <label className="form-label">Tipo de Cuenta</label>
                 <select
                   className="form-select"
                   value={role}
@@ -132,8 +132,8 @@ export const AuthModal = ({ isOpen, onClose }) => {
                 }}
               >
                 {isLoginMode
-                  ? '¿No tienes cuenta? Regístrate aquí'
-                  : '¿Ya posees cuenta? Inicia sesión'}
+                  ? 'No tengo cuenta: Registrarme'
+                  : 'Ya tengo cuenta: Iniciar sesión'}
               </button>
             </div>
           </div>
@@ -143,7 +143,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
               Cancelar
             </button>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Procesando...' : isLoginMode ? 'Ingresar' : 'Registrarse'}
+              {loading ? 'Procesando...' : isLoginMode ? 'Ingresar' : 'Registrar Cuenta'}
             </button>
           </div>
         </form>

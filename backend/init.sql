@@ -40,7 +40,9 @@ CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
 
 INSERT INTO users (name, email, password, role)
-VALUES ('Administrador', 'admin@tienda.com', crypt('12345', gen_salt('bf')), 'admin')
+VALUES 
+  ('Administrador', 'admin@tienda.com', crypt('12345', gen_salt('bf')), 'admin'),
+  ('Cliente Demo', 'cliente@tienda.com', crypt('12345', gen_salt('bf')), 'customer')
 ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO products (name, description, price, stock)

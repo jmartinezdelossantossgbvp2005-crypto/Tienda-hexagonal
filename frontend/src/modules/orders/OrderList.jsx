@@ -179,7 +179,7 @@ export const OrderList = () => {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Detalle de Artículos</h3>
-              <button className="btn btn-outline btn-sm" onClick={() => setExpandedOrderId(null)}>✕</button>
+              <button className="btn btn-outline btn-sm" onClick={() => setExpandedOrderId(null)}>X</button>
             </div>
             <div className="modal-body">
               {(() => {
