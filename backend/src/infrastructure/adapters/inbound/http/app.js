@@ -40,8 +40,18 @@ import { errorHandler } from './middlewares/error.middleware.js';
 export const createApp = () => {
   const app = express();
 
+  const corsOrigin = config.corsOrigin || '*';
   app.use(cors({
-    origin: config.corsOrigin,
+    origin: (origin, callback) => {
+      if (!origin || corsOrigin === '*' || corsOrigin === '') {
+        return callback(null, true);
+      }
+      const allowedList = corsOrigin.split(',').map(s => s.trim());
+      if (allowedList.includes(origin) || allowedList.includes('*')) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true
   }));
   app.use(express.json());

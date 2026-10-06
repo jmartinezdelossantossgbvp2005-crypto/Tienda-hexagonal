@@ -1,4 +1,15 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const getBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  if (typeof window !== 'undefined' && window.location && window.location.hostname) {
+    // Detecta automaticamente la IP o dominio de la instancia EC2 o localhost
+    return `${window.location.protocol}//${window.location.hostname}:3000/api`;
+  }
+  return 'http://localhost:3000/api';
+};
+
+const BASE_URL = getBaseUrl();
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem('token');
@@ -18,7 +29,7 @@ async function request(endpoint, options = {}) {
       headers
     });
   } catch (networkError) {
-    throw new Error('No se pudo conectar con el servidor backend en el puerto 3000. Asegurese de que el servicio este en ejecucion.');
+    throw new Error(`No se pudo conectar con el servidor backend en ${BASE_URL}. Asegurese de que el servicio este en ejecucion y el puerto 3000 este abierto.`);
   }
 
   let data;
