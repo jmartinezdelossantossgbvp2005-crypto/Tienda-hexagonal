@@ -6,6 +6,8 @@ export const ProductModal = ({ isOpen, onClose, product, onSaved }) => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -13,18 +15,44 @@ export const ProductModal = ({ isOpen, onClose, product, onSaved }) => {
     if (product) {
       setName(product.name || '');
       setDescription(product.description || '');
-      setPrice(product.price || '');
-      setStock(product.stock || '');
+      setPrice(product.price !== undefined ? product.price : '');
+      setStock(product.stock !== undefined ? product.stock : '');
+      setImagePreview(product.imageUrl || '');
+      setImageFile(null);
     } else {
       setName('');
       setDescription('');
       setPrice('');
       setStock('');
+      setImagePreview('');
+      setImageFile(null);
     }
     setError('');
   }, [product, isOpen]);
 
   if (!isOpen) return null;
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setError('Por favor selecciona un archivo de imagen válido');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setError('El tamaño de la imagen no debe superar los 5 MB');
+        return;
+      }
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+      setError('');
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,17 +60,24 @@ export const ProductModal = ({ isOpen, onClose, product, onSaved }) => {
     setError('');
 
     try {
-      const payload = {
-        name,
-        description,
-        price: parseFloat(price),
-        stock: parseInt(stock, 10)
-      };
+      const formData = new FormData();
+      formData.append('name', name.trim());
+      formData.append('description', description.trim());
+      formData.append('price', parseFloat(price));
+      formData.append('stock', parseInt(stock, 10));
+
+      if (imageFile) {
+        formData.append('image', imageFile);
+      } else if (imagePreview) {
+        formData.append('imageUrl', imagePreview);
+      } else {
+        formData.append('imageUrl', '');
+      }
 
       if (product?.id) {
-        await productService.update(product.id, payload);
+        await productService.update(product.id, formData);
       } else {
-        await productService.create(payload);
+        await productService.create(formData);
       }
       onSaved();
       onClose();
@@ -113,6 +148,42 @@ export const ProductModal = ({ isOpen, onClose, product, onSaved }) => {
                   onChange={(e) => setStock(e.target.value)}
                 />
               </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Imagen del Producto</label>
+              {imagePreview ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem', padding: '0.5rem', background: '#f8fafc', borderRadius: 'var(--radius)', border: '1px solid var(--border)' }}>
+                  <img
+                    src={imagePreview}
+                    alt="Vista previa"
+                    style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '6px' }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-main)' }}>
+                      {imageFile ? imageFile.name : 'Imagen actual'}
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      style={{ marginTop: '0.35rem', color: 'var(--danger)', borderColor: '#fca5a5' }}
+                      onClick={handleRemoveImage}
+                    >
+                      Quitar imagen
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+
+              <input
+                type="file"
+                accept="image/png, image/jpeg, image/webp, image/gif"
+                className="form-input"
+                onChange={handleFileChange}
+              />
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.35rem' }}>
+                Formatos permitidos: JPG, PNG, WEBP. Máx: 5 MB.
+              </span>
             </div>
           </div>
 

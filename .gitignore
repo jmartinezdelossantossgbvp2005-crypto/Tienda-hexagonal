@@ -11,21 +11,19 @@ build/
 
 # Environment & local credentials files
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 *.env
+.env.example
+*.env.example
+*example*
 *.local.md
 CREDENCIALES_LOCALES.md
 LOCAL_CREDENTIALS.md
 SECRETS.md
-
-# Keep example files
-!.env.example
-!*.env.example
-!backend/.env.example
-!frontend/.env.example
 
 # Temporary files & logs
 .test_write

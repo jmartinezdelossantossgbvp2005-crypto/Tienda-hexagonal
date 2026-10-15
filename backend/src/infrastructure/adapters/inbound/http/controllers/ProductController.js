@@ -33,8 +33,18 @@ export class ProductController {
 
   create = async (req, res, next) => {
     try {
-      const { name, description, price, stock } = req.body;
-      const product = await this.createProductUseCase.execute({ name, description, price, stock });
+      const { name, description, price, stock, imageUrl } = req.body;
+      const imageFile = req.file ? req.file.buffer : null;
+
+      const product = await this.createProductUseCase.execute({
+        name,
+        description,
+        price,
+        stock,
+        imageFile,
+        imageUrl
+      });
+
       res.status(201).json({
         success: true,
         message: 'Producto creado exitosamente',
@@ -47,8 +57,18 @@ export class ProductController {
 
   update = async (req, res, next) => {
     try {
-      const { name, description, price, stock } = req.body;
-      const updated = await this.updateProductUseCase.execute(req.params.id, { name, description, price, stock });
+      const { name, description, price, stock, imageUrl } = req.body;
+      const imageFile = req.file ? req.file.buffer : null;
+
+      const updated = await this.updateProductUseCase.execute(req.params.id, {
+        name,
+        description,
+        price,
+        stock,
+        imageFile,
+        imageUrl
+      });
+
       res.status(200).json({
         success: true,
         message: 'Producto actualizado exitosamente',

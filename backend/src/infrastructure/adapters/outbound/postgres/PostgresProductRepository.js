@@ -15,30 +15,31 @@ export class PostgresProductRepository extends ProductRepositoryPort {
       description: row.description,
       price: row.price,
       stock: row.stock,
+      imageUrl: row.image_url,
       createdAt: row.created_at
     });
   }
 
   async create(product) {
     const query = `
-      INSERT INTO products (name, description, price, stock)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id, name, description, price, stock, created_at
+      INSERT INTO products (name, description, price, stock, image_url)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id, name, description, price, stock, image_url, created_at
     `;
-    const values = [product.name, product.description, product.price, product.stock];
+    const values = [product.name, product.description, product.price, product.stock, product.imageUrl || null];
     const { rows } = await this.pool.query(query, values);
     return this.mapToEntity(rows[0]);
   }
 
   async findById(id, client = null) {
     const db = client || this.pool;
-    const query = `SELECT id, name, description, price, stock, created_at FROM products WHERE id = $1`;
+    const query = `SELECT id, name, description, price, stock, image_url, created_at FROM products WHERE id = $1`;
     const { rows } = await db.query(query, [id]);
     return this.mapToEntity(rows[0]);
   }
 
   async findAll() {
-    const query = `SELECT id, name, description, price, stock, created_at FROM products ORDER BY created_at DESC`;
+    const query = `SELECT id, name, description, price, stock, image_url, created_at FROM products ORDER BY created_at DESC`;
     const { rows } = await this.pool.query(query);
     return rows.map(row => this.mapToEntity(row));
   }
@@ -46,11 +47,11 @@ export class PostgresProductRepository extends ProductRepositoryPort {
   async update(id, product) {
     const query = `
       UPDATE products
-      SET name = $1, description = $2, price = $3, stock = $4
-      WHERE id = $5
-      RETURNING id, name, description, price, stock, created_at
+      SET name = $1, description = $2, price = $3, stock = $4, image_url = $5
+      WHERE id = $6
+      RETURNING id, name, description, price, stock, image_url, created_at
     `;
-    const values = [product.name, product.description, product.price, product.stock, id];
+    const values = [product.name, product.description, product.price, product.stock, product.imageUrl || null, id];
     const { rows } = await this.pool.query(query, values);
     return this.mapToEntity(rows[0]);
   }
@@ -63,7 +64,7 @@ export class PostgresProductRepository extends ProductRepositoryPort {
 
   async updateStock(id, newStock, client = null) {
     const db = client || this.pool;
-    const query = `UPDATE products SET stock = $1 WHERE id = $2 RETURNING id, name, description, price, stock, created_at`;
+    const query = `UPDATE products SET stock = $1 WHERE id = $2 RETURNING id, name, description, price, stock, image_url, created_at`;
     const { rows } = await db.query(query, [newStock, id]);
     return this.mapToEntity(rows[0]);
   }

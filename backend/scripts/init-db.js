@@ -68,8 +68,11 @@ async function initializeSchemaAndSeed() {
         description TEXT,
         price NUMERIC(10, 2) NOT NULL CHECK (price >= 0),
         stock INTEGER NOT NULL CHECK (stock >= 0),
+        image_url TEXT,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS image_url TEXT;
 
       CREATE TABLE IF NOT EXISTS orders (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

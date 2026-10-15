@@ -5,15 +5,27 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
+    "start:workers": "node src/workers.js",
     "dev": "node --watch src/server.js",
-    "db:init": "node scripts/init-db.js"
+    "dev:workers": "node --watch src/workers.js",
+    "db:init": "node scripts/init-db.js",
+    "telegram:webhook:info": "node scripts/setup-telegram-webhook.js info",
+    "telegram:webhook:set": "node scripts/setup-telegram-webhook.js set",
+    "telegram:webhook:delete": "node scripts/setup-telegram-webhook.js delete"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bullmq": "^6.3.15",
+    "cloudinary": "^2.11.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.4.0",
+    "node-cron": "^4.6.0",
+    "node-telegram-bot-api": "^2.1.0",
+    "nodemailer": "^10.1.1",
     "pg": "^8.12.0"
   }
 }

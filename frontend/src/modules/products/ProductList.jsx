@@ -95,6 +95,37 @@ export const ProductList = ({ onAddToCart }) => {
             return (
               <div key={product.id} className="card product-card">
                 <div>
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '170px',
+                      borderRadius: 'var(--radius)',
+                      overflow: 'hidden',
+                      backgroundColor: '#f1f5f9',
+                      marginBottom: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid var(--border)'
+                    }}
+                  >
+                    {product.imageUrl ? (
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+                        <span style={{ fontSize: '1.75rem' }}>📦</span>
+                        <span>Sin imagen</span>
+                      </div>
+                    )}
+                  </div>
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
                     <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{product.name}</h3>
                     <span className={`badge ${hasStock ? 'badge-success' : 'badge-danger'}`}>

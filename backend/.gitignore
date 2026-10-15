@@ -1,8 +1,10 @@
 node_modules/
 .env
+.env.*
 .env.local
 .env.*.local
 *.env
-!.env.example
-!*.env.example
+.env.example
+*.env.example
+*example*
 *.log

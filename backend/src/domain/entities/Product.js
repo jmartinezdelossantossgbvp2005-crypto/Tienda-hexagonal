@@ -1,10 +1,11 @@
 export class Product {
-  constructor({ id = null, name, description = '', price, stock, createdAt = new Date() }) {
+  constructor({ id = null, name, description = '', price, stock, imageUrl = null, createdAt = new Date() }) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.price = Number(price);
     this.stock = Number(stock);
+    this.imageUrl = imageUrl;
     this.createdAt = createdAt;
     this.validate();
   }
@@ -18,6 +19,9 @@ export class Product {
     }
     if (isNaN(this.stock) || !Number.isInteger(this.stock) || this.stock < 0) {
       throw new Error('El inventario debe ser un número entero mayor o igual a cero');
+    }
+    if (this.imageUrl !== null && this.imageUrl !== undefined && typeof this.imageUrl !== 'string') {
+      throw new Error('La URL de la imagen debe ser una cadena de texto válida');
     }
   }
 
@@ -46,6 +50,7 @@ export class Product {
       description: this.description,
       price: this.price,
       stock: this.stock,
+      imageUrl: this.imageUrl,
       createdAt: this.createdAt
     };
   }
