@@ -40,6 +40,9 @@ async function request(endpoint, options = {}) {
   }
 
   if (!response.ok) {
+    if (response.status === 401 && data && data.code === 'SESSION_CONCURRENT') {
+      window.dispatchEvent(new CustomEvent('session:concurrent', { detail: data.message }));
+    }
     const message = (data && data.message) ? data.message : `Error de servidor HTTP ${response.status}`;
     throw new Error(message);
   }

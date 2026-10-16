@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export class LoginUser {
   constructor(userRepository, securityService) {
     this.userRepository = userRepository;
@@ -19,14 +21,23 @@ export class LoginUser {
       throw new Error('Credenciales de acceso inválidas');
     }
 
+    // Generar un ID de sesión único para garantizar una sola sesión activa
+    const sessionId = crypto.randomUUID();
+    if (typeof this.userRepository.updateSessionId === 'function') {
+      await this.userRepository.updateSessionId(user.id, sessionId);
+    }
+    user.activeSessionId = sessionId;
+
     const token = this.securityService.generateToken({
       id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
+      sessionId
     });
 
     return {
       token,
+      sessionId,
       user: user.toJSON()
     };
   }

@@ -7,8 +7,10 @@ export class AuthController {
 
   register = async (req, res, next) => {
     try {
-      const { name, email, password, role } = req.body;
-      const user = await this.registerUserUseCase.execute({ name, email, password, role });
+      // Seguridad: El autoregistro público SIEMPRE asigna rol 'customer'.
+      // El rol 'admin' no puede ser autoasignado desde el panel de registro.
+      const { name, email, password } = req.body;
+      const user = await this.registerUserUseCase.execute({ name, email, password, role: 'customer' });
       res.status(201).json({
         success: true,
         message: 'Usuario registrado exitosamente',

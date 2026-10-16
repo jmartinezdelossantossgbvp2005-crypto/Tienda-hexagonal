@@ -2,6 +2,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
 import { StoragePort } from '../../../../application/ports/StoragePort.js';
 import { config } from '../../../config/env.js';
+import { LocalStorageAdapter } from './LocalStorageAdapter.js';
 
 export class CloudinaryAdapter extends StoragePort {
   constructor(options = {}) {
@@ -9,6 +10,7 @@ export class CloudinaryAdapter extends StoragePort {
     this.cloudName = options.cloudName || config.cloudinary?.cloudName;
     this.apiKey = options.apiKey || config.cloudinary?.apiKey;
     this.apiSecret = options.apiSecret || config.cloudinary?.apiSecret;
+    this.localStorageAdapter = new LocalStorageAdapter();
 
     this.isConfigured = Boolean(this.cloudName && this.apiKey && this.apiSecret);
 
@@ -20,18 +22,18 @@ export class CloudinaryAdapter extends StoragePort {
         secure: true
       });
     } else {
-      console.warn('⚠️ CloudinaryAdapter: Faltan credenciales de Cloudinary (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET). Las subidas remotas estarán desactivadas hasta configurarlas.');
+      console.log('📁 [Almacenamiento] Cloudinary no está configurado. Modo activo: Almacenamiento local en disco (/uploads).');
     }
   }
 
   /**
-   * Sube un buffer de imagen a Cloudinary
+   * Sube un buffer de imagen a Cloudinary (o al disco local si Cloudinary no está configurado)
    * @param {Buffer|Object} file Buffer o file object
-   * @returns {Promise<string>} URL segura HTTPS de la imagen
+   * @returns {Promise<string>} URL de la imagen
    */
   async uploadFile(file) {
     if (!this.isConfigured) {
-      throw new Error('Cloudinary no está configurado. Por favor define las variables de entorno CLOUDINARY_* en tu archivo .env.');
+      return await this.localStorageAdapter.uploadFile(file);
     }
 
     const buffer = Buffer.isBuffer(file) ? file : file?.buffer;
@@ -71,8 +73,13 @@ export class CloudinaryAdapter extends StoragePort {
    * @returns {Promise<boolean>}
    */
   async deleteFile(fileUrl) {
-    if (!this.isConfigured || !fileUrl || typeof fileUrl !== 'string') {
+    if (!fileUrl || typeof fileUrl !== 'string') {
       return false;
+    }
+
+    if (!this.isConfigured || fileUrl.includes('/uploads/')) {
+      await this.localStorageAdapter.deleteFile(fileUrl);
+      return true;
     }
 
     try {

@@ -35,11 +35,14 @@ export const config = {
     apiSecret: process.env.CLOUDINARY_API_SECRET || ''
   },
   smtp: {
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '465', 10),
-    secure: process.env.SMTP_SECURE !== 'false',
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASS || '',
+    host: process.env.SMTP_HOST || process.env.MAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || process.env.MAIL_PORT || '465', 10),
+    secure: process.env.SMTP_SECURE !== undefined
+      ? process.env.SMTP_SECURE === 'true'
+      : (parseInt(process.env.SMTP_PORT || process.env.MAIL_PORT || '465', 10) === 465),
+    user: process.env.SMTP_USER || process.env.MAIL_USER || '',
+    pass: (process.env.SMTP_PASS || process.env.MAIL_PASSWORD || '').replace(/\s+/g, ''),
+    from: process.env.SMTP_FROM || process.env.MAIL_FROM || process.env.SMTP_USER || process.env.MAIL_USER || '',
     adminEmail: process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || 'admin@tienda.com',
     dkim: {
       domainName: process.env.DKIM_DOMAIN_NAME || '',

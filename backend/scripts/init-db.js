@@ -73,6 +73,7 @@ async function initializeSchemaAndSeed() {
       );
 
       ALTER TABLE products ADD COLUMN IF NOT EXISTS image_url TEXT;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS active_session_id VARCHAR(100);
 
       CREATE TABLE IF NOT EXISTS orders (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

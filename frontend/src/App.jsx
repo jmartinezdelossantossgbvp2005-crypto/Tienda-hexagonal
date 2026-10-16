@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AuthProvider } from './modules/auth/AuthContext.jsx';
 import { useAuth } from './modules/auth/useAuth.js';
 import { AuthModal } from './modules/auth/AuthModal.jsx';
+import { SessionGuardModal } from './modules/auth/SessionGuardModal.jsx';
 import { ProductList } from './modules/products/ProductList.jsx';
 import { OrderList } from './modules/orders/OrderList.jsx';
 import { CartDrawer } from './modules/orders/CartDrawer.jsx';
@@ -10,7 +11,7 @@ import { UserManagement } from './modules/admin/UserManagement.jsx';
 import { UserProfile } from './modules/profile/UserProfile.jsx';
 
 const AppContent = () => {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout, isAdmin, isBlockedByAnotherTab, blockReason, takeOverSession } = useAuth();
 
   const [activeTab, setActiveTab] = useState(isAdmin ? 'dashboard' : 'products');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -181,6 +182,12 @@ const AppContent = () => {
       </main>
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <SessionGuardModal
+        isOpen={isBlockedByAnotherTab}
+        reason={blockReason}
+        onTakeOver={takeOverSession}
+        onLogout={logout}
+      />
 
       <CartDrawer
         isOpen={isCartOpen}

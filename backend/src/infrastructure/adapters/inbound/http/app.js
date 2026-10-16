@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import { config } from '../../../config/env.js';
 import { pool } from '../../outbound/postgres/connection.js';
 
@@ -66,6 +67,7 @@ export const createApp = () => {
     credentials: true
   }));
   app.use(express.json());
+  app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
   // Adaptadores de infraestructura
   const userRepository = new PostgresUserRepository(pool);

@@ -22,4 +22,8 @@ export class UserRepositoryPort {
   async delete(id) {
     throw new Error('Método no implementado');
   }
+
+  async updateSessionId(userId, sessionId) {
+    throw new Error('Método no implementado');
+  }
 }

@@ -15,6 +15,7 @@ export class PostgresUserRepository extends UserRepositoryPort {
       email: row.email,
       password: row.password,
       role: row.role,
+      activeSessionId: row.active_session_id,
       createdAt: row.created_at
     });
   }
@@ -31,19 +32,19 @@ export class PostgresUserRepository extends UserRepositoryPort {
   }
 
   async findById(id) {
-    const query = `SELECT id, name, email, password, role, created_at FROM users WHERE id = $1`;
+    const query = `SELECT id, name, email, password, role, active_session_id, created_at FROM users WHERE id = $1`;
     const { rows } = await this.pool.query(query, [id]);
     return this.mapToEntity(rows[0]);
   }
 
   async findByEmail(email) {
-    const query = `SELECT id, name, email, password, role, created_at FROM users WHERE email = $1`;
+    const query = `SELECT id, name, email, password, role, active_session_id, created_at FROM users WHERE email = $1`;
     const { rows } = await this.pool.query(query, [email]);
     return this.mapToEntity(rows[0]);
   }
 
   async findAll() {
-    const query = `SELECT id, name, email, password, role, created_at FROM users ORDER BY created_at DESC`;
+    const query = `SELECT id, name, email, password, role, active_session_id, created_at FROM users ORDER BY created_at DESC`;
     const { rows } = await this.pool.query(query);
     return rows.map(row => this.mapToEntity(row));
   }
@@ -64,5 +65,10 @@ export class PostgresUserRepository extends UserRepositoryPort {
     const query = `DELETE FROM users WHERE id = $1`;
     const result = await this.pool.query(query, [id]);
     return result.rowCount > 0;
+  }
+
+  async updateSessionId(userId, sessionId) {
+    const query = `UPDATE users SET active_session_id = $1 WHERE id = $2`;
+    await this.pool.query(query, [sessionId, userId]);
   }
 }

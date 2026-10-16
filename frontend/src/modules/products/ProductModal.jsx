@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { productService } from '../../services/product.service.js';
+import { getImageUrl } from '../../utils/imageUrl.js';
 
 export const ProductModal = ({ isOpen, onClose, product, onSaved }) => {
   const [name, setName] = useState('');
@@ -155,7 +156,7 @@ export const ProductModal = ({ isOpen, onClose, product, onSaved }) => {
               {imagePreview ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem', padding: '0.5rem', background: '#f8fafc', borderRadius: 'var(--radius)', border: '1px solid var(--border)' }}>
                   <img
-                    src={imagePreview}
+                    src={getImageUrl(imagePreview)}
                     alt="Vista previa"
                     style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '6px' }}
                   />

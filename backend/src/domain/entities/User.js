@@ -1,10 +1,11 @@
 export class User {
-  constructor({ id = null, name, email, password, role = 'customer', createdAt = new Date() }) {
+  constructor({ id = null, name, email, password, role = 'customer', activeSessionId = null, createdAt = new Date() }) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.password = password;
     this.role = role;
+    this.activeSessionId = activeSessionId;
     this.createdAt = createdAt;
     this.validate();
   }
@@ -34,6 +35,7 @@ export class User {
       name: this.name,
       email: this.email,
       role: this.role,
+      activeSessionId: this.activeSessionId,
       createdAt: this.createdAt
     };
   }

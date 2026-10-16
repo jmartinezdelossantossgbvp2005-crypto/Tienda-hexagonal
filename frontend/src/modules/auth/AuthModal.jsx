@@ -7,7 +7,6 @@ export const AuthModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState('customer');
   const [errorMessage, setErrorMessage] = useState('');
 
   const { login, register, loading } = useAuth();
@@ -26,7 +25,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
         setErrorMessage(result.message);
       }
     } else {
-      const result = await register(name, email, password, role);
+      const result = await register(name, email, password);
       if (result.success) {
         onClose();
       } else {
@@ -108,19 +107,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            {!isLoginMode && (
-              <div className="form-group">
-                <label className="form-label">Tipo de Cuenta</label>
-                <select
-                  className="form-select"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
-                  <option value="customer">Cliente</option>
-                  <option value="admin">Administrador</option>
-                </select>
-              </div>
-            )}
+
 
             <div style={{ marginTop: '1rem', textAlign: 'center' }}>
               <button

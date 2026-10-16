@@ -1,4 +1,4 @@
-import { config } from '../../../config/env.js';
+import { config } from '../../../../config/env.js';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -22,7 +22,15 @@ export class TelegramWebhookController {
   initClient() {
     if (config.telegram?.botToken && TelegramApiClass) {
       try {
-        this.client = new TelegramApiClass(config.telegram.botToken, { polling: false });
+        const isPolling = !config.telegram.webhookUrl && config.nodeEnv === 'development';
+        this.client = new TelegramApiClass(config.telegram.botToken, { polling: isPolling });
+
+        if (isPolling) {
+          this.client.on('message', async (message) => {
+            await this.processMessage(message);
+          });
+          console.log('🤖 [TelegramBot] Modo POLLING activo para pruebas interactivas en desarrollo local.');
+        }
       } catch (err) {
         console.warn('⚠️ Error al instanciar cliente de Telegram para Webhook:', err.message);
       }
@@ -41,6 +49,12 @@ export class TelegramWebhookController {
 
     const update = req.body;
     const message = update?.message;
+    if (message) {
+      await this.processMessage(message);
+    }
+  };
+
+  async processMessage(message) {
     if (!message || !message.text) return;
 
     const chatId = message.chat.id;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { productService } from '../../services/product.service.js';
 import { useAuth } from '../auth/useAuth.js';
 import { ProductModal } from './ProductModal.jsx';
+import { getImageUrl } from '../../utils/imageUrl.js';
 
 export const ProductList = ({ onAddToCart }) => {
   const [products, setProducts] = useState([]);
@@ -111,7 +112,7 @@ export const ProductList = ({ onAddToCart }) => {
                   >
                     {product.imageUrl ? (
                       <img
-                        src={product.imageUrl}
+                        src={getImageUrl(product.imageUrl)}
                         alt={product.name}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         onError={(e) => {
